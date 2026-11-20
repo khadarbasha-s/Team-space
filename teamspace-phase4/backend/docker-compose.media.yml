@@ -1,0 +1,37 @@
+# Video infrastructure for TeamSpace: the LiveKit media server, Redis, and the
+# server-side recorder (egress). Start with:
+#   docker compose -f docker-compose.media.yml up -d
+# Recordings are written to ./uploads/egress and picked up by the backend.
+# One-time setup: the recorder runs as a non-root user inside its container, so
+# the folder must be writable by it:  mkdir -p uploads/egress && chmod 777 uploads/egress
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: teamspace-redis
+    restart: unless-stopped
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: teamspace-livekit
+    command: ["--config", "/livekit.yaml", "--dev"]
+    restart: unless-stopped
+    depends_on: [redis]
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "51000-51100:51000-51100/udp"
+    volumes:
+      - ./livekit.docker.yaml:/livekit.yaml:ro
+
+  egress:
+    image: livekit/egress:latest
+    container_name: teamspace-egress
+    restart: unless-stopped
+    depends_on: [redis, livekit]
+    environment:
+      EGRESS_CONFIG_FILE: /etc/egress.yaml
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./egress.yaml:/etc/egress.yaml:ro
+      - ./uploads/egress:/out

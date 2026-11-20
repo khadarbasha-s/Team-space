@@ -1,0 +1,17 @@
+port: 7880
+bind_addresses:
+  - "0.0.0.0"
+rtc:
+  tcp_port: 7881
+  port_range_start: 51000
+  port_range_end: 51100
+  use_external_ip: false
+keys:
+  APIjXktKESGXnWu: a5qLIlMbxh2eCzu9jN6y0MbnvWOvP8yxuGyXOufdkMQ
+# Redis lets the LiveKit server and the recorder (egress) talk to each other.
+redis:
+  address: teamspace-redis:6379
+# Close an empty meeting room quickly so a server recording stops soon after the last person leaves.
+room:
+  empty_timeout: 10
+  departure_timeout: 5

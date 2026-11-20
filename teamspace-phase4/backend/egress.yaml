@@ -1,0 +1,10 @@
+# LiveKit Egress: the server-side recorder. It joins a meeting's room as an
+# invisible participant, renders the call and writes an MP4 -- so a recording
+# keeps going no matter who closes their browser.
+log_level: info
+api_key: APIjXktKESGXnWu
+api_secret: a5qLIlMbxh2eCzu9jN6y0MbnvWOvP8yxuGyXOufdkMQ
+ws_url: ws://teamspace-livekit:7880
+redis:
+  address: teamspace-redis:6379
+health_port: 8081
